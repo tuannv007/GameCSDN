@@ -3,6 +3,7 @@ package tuannv007.com.gamecsdn.main
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import tuannv007.com.gamecsdn.R
+import tuannv007.com.gamecsdn.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

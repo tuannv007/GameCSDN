@@ -9,14 +9,15 @@ import tuannv007.com.gamecsdn.model.Item
 /**
  * Created by Adminis on 1/8/2018.
  */
-class MainPresenter(var view: MainView.View) : MainView.Presenter {
-    private val itemList: ArrayList<Item> = ArrayList()
+class MainPresenter(val fagment: MainFragment) : MainView.Presenter {
+    private var url: String = ""
     override fun getVideo(url: String) {
-        LoadImageTask().execute(url)
+        this.url = url
+        LoadImageTask().execute()
     }
 
-    fun getDataFromGameTV(url: String?) {
-        val document: Document = Jsoup.connect(url).get() as Document
+    fun testData(list: ArrayList<Item>): ArrayList<Item> {
+        var document: Document = Jsoup.connect(url).get() as Document
         val sub = document.select("figure.video")
         for (e in sub) {
             val titleSubject = e.getElementsByTag("a").first()
@@ -25,24 +26,23 @@ class MainPresenter(var view: MainView.View) : MainView.Presenter {
                 val src = imgSubject.attr("src")
                 val alt = imgSubject.attr("alt")
                 val title = titleSubject.attr("href")
-                itemList.add(Item(src, alt, title))
+                list.add(Item(src, alt, title))
             }
 
         }
-
+        return list
     }
 
     @SuppressLint("StaticFieldLeak")
-    inner class LoadImageTask : AsyncTask<String, Void, ArrayList<Item>>() {
-        override fun doInBackground(vararg p0: String?): ArrayList<Item>? {
-            getDataFromGameTV(p0[0])
-            return get()
+    inner class LoadImageTask : AsyncTask<Void, Void, ArrayList<Item>>() {
+        override fun doInBackground(vararg p0: Void?): ArrayList<Item>? {
+            val listData: ArrayList<Item> = ArrayList()
+            return testData(listData)
         }
-
 
         override fun onPostExecute(result: ArrayList<Item>?) {
             super.onPostExecute(result)
-            view.updateAdapter(result!!)
+            fagment.updateAdapter(result)
         }
 
     }
